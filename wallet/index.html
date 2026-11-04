@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<!-- ARTIFACT-HEAD-START -->
+<title>Pocket Wallet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+<!-- ARTIFACT-HEAD-END -->
+</head>
+<body>
+<!-- ARTIFACT-BODY-START -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 7h11M8 12h11M8 17h11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="4.5" cy="7" r="1.3" fill="currentColor"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor"/><circle cx="4.5" cy="17" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.5-3 8-7 9.5-4-1.5-7-5-7-9.5V6l7-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z" fill="currentColor"/></symbol>
+    <symbol id="i-star-o" viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-nfc" viewBox="0 0 24 24"><path d="M7 6.5c2.4 3.4 2.4 7.6 0 11M11.5 4.5c3.4 4.6 3.4 10.4 0 15M16 2.5c4.4 5.8 4.4 13.2 0 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></symbol>
+  </defs>
+</svg>
+
+<main class="app" id="app">
+  <header class="top">
+    <h1>Wallet</h1>
+    <div class="top-actions">
+      <button class="icon-btn" id="btnSearch" aria-label="Search cards" aria-expanded="false" aria-controls="searchBox"><svg><use href="#i-search"/></svg></button>
+      <button class="icon-btn" id="btnManage" aria-label="Edit cards"><svg><use href="#i-list"/></svg></button>
+      <button class="icon-btn primary" id="btnAdd" aria-label="Add card"><svg><use href="#i-plus"/></svg></button>
+    </div>
+  </header>
+
+  <div class="search" id="searchBox">
+    <div>
+      <label class="search-field">
+        <svg><use href="#i-search"/></svg>
+        <span class="sr">Search cards</span>
+        <input id="searchInput" type="search" placeholder="Name, brand or last 4 digits" autocomplete="off" enterkeyhint="search">
+      </label>
+      <div class="search-meta" id="searchMeta" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <p class="demo-note" id="demoNote"><svg><use href="#i-info"/></svg><span><strong>Demo mode.</strong> Cards are saved as display details only. No card is enrolled with a bank and no payments are made.</span></p>
+
+  <section id="walletView" aria-label="Your cards">
+    <div class="carousel" id="carousel" role="list"></div>
+    <div class="dots" id="dots" role="tablist" aria-label="Choose card"></div>
+    <div class="no-match" id="noMatch" hidden><strong>No cards found</strong>Try a different name, brand or last 4 digits.</div>
+    <div class="panel" id="panel"></div>
+  </section>
+
+  <section class="empty" id="emptyView" hidden>
+    <div class="empty-art" aria-hidden="true" id="emptyArt"></div>
+    <h2>Add your first card</h2>
+    <p>Keep your cards in one place. Tap the plus to add a credit or debit card.</p>
+    <div class="actions">
+      <button class="btn-primary" id="emptyAdd"><svg><use href="#i-plus"/></svg>Add Card</button>
+      <button class="btn-secondary" id="emptySample">Try with sample cards</button>
+    </div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+
+<!-- Add card sheet -->
+<section class="sheet" id="addSheet" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <div class="sheet-bar">
+    <button class="link l" type="button" data-close>Cancel</button>
+    <h2 id="addTitle">Add Card</h2>
+    <button class="link r" type="submit" form="addForm" id="addSave">Add</button>
+  </div>
+  <form class="sheet-body" id="addForm" novalidate autocomplete="off">
+    <div class="flip" id="flip">
+      <div class="flip-inner">
+        <div class="face cw" id="pvFront"></div>
+        <div class="face backface cw" id="pvBack"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="group-label">Card details</div>
+      <div class="group">
+        <div class="field-row" data-field="name">
+          <label for="fName">Name</label>
+          <input id="fName" name="name" autocomplete="cc-name" autocapitalize="words" spellcheck="false" placeholder="Name on card" maxlength="40">
+        </div>
+        <div class="field-row" data-field="number">
+          <label for="fNumber">Number</label>
+          <input id="fNumber" name="number" inputmode="numeric" autocomplete="off" placeholder="1234 5678 9012 3456" maxlength="23" aria-describedby="brandTag">
+          <span class="brand-tag" id="brandTag" hidden></span>
+        </div>
+        <div class="split">
+          <div class="field-row" data-field="exp">
+            <label for="fExp">Expires</label>
+            <input id="fExp" name="exp" inputmode="numeric" autocomplete="off" placeholder="MM/YY" maxlength="5">
+          </div>
+          <div class="field-row" data-field="cvv">
+            <label for="fCvv">CVV</label>
+            <input id="fCvv" name="cvv" type="password" inputmode="numeric" autocomplete="off" placeholder="123" maxlength="4">
+          </div>
+        </div>
+      </div>
+      <div class="errors" id="formErrors" aria-live="polite"></div>
+    </div>
+
+    <div>
+      <div class="group-label">Appearance</div>
+      <div class="group">
+        <div class="field-row">
+          <label for="fNick">Label</label>
+          <input id="fNick" name="nickname" placeholder="e.g. Everyday, Travel" maxlength="24">
+        </div>
+        <div class="swatches" role="radiogroup" aria-label="Card color" id="addSwatches"></div>
+        <div class="field-row">
+          <label for="fDefault" style="width:auto;flex:1">Use as default card</label>
+          <span class="switch"><input type="checkbox" id="fDefault" role="switch"><span></span></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="notice"><svg><use href="#i-shield"/></svg><span>Only the brand, last 4 digits, expiry and name are saved, and only on this device. The full card number and CVV are checked and then discarded. They are never stored. To enroll real cards, connect a PCI-compliant tokenization provider.</span></p>
+  </form>
+</section>
+
+<!-- Card detail sheet -->
+<section class="sheet" id="detailSheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+  <div class="sheet-bar">
+    <span></span>
+    <h2 id="detailTitle">Card</h2>
+    <button class="link r" type="button" data-close>Done</button>
+  </div>
+  <div class="sheet-body" id="detailBody">
+    <div class="detail-card cw" id="detailCard"></div>
+    <div class="seg" role="tablist" id="detailTabs">
+      <span class="thumb"></span>
+      <button role="tab" data-tab="tx" aria-selected="true">Transactions</button>
+      <button role="tab" data-tab="info" aria-selected="false">Card Info</button>
+      <button role="tab" data-tab="settings" aria-selected="false">Settings</button>
+    </div>
+    <div id="detailPane"></div>
+  </div>
+</section>
+
+<!-- Manage sheet -->
+<section class="sheet" id="manageSheet" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
+  <div class="sheet-bar">
+    <span></span>
+    <h2 id="manageTitle">Edit Cards</h2>
+    <button class="link r" type="button" data-close>Done</button>
+  </div>
+  <div class="sheet-body">
+    <div>
+      <div class="group" id="manageList" role="list"></div>
+      <p class="group-foot">Drag the handle to reorder, or focus it and use the arrow keys. Tap the star to choose your default card.</p>
+    </div>
+  </div>
+</section>
+
+<div class="dialog-wrap" id="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlgTitle" aria-describedby="dlgMsg">
+  <div class="dialog">
+    <h3 id="dlgTitle"></h3>
+    <p id="dlgMsg"></p>
+    <div class="dbtns"><button type="button" id="dlgCancel">Cancel</button><button type="button" id="dlgOk"></button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="ti"><svg><use href="#i-check"/></svg></span><span id="toastMsg"></span></div>
+
+<script src="app.js"></script>
+<!-- ARTIFACT-BODY-END -->
+</body>
+</html>
