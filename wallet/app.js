@@ -110,7 +110,9 @@
     try { raw = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { raw = null; }
     const cards = Array.isArray(raw && raw.cards) ? raw.cards.map(sanitizeCard).filter(Boolean) : [];
     const defaultId = raw && cards.some((c) => c.id === raw.defaultId) ? raw.defaultId : (cards[0] ? cards[0].id : null);
-    return { cards, defaultId };
+    let seeded = true;
+    try { seeded = localStorage.getItem(STORE_KEY + '.demoSeeded') === '1'; localStorage.setItem(STORE_KEY + '.demoSeeded', '1'); } catch (e) { seeded = false; }
+    return { cards, defaultId, fresh: !seeded && cards.length === 0 };
   }
   function persist() {
     const payload = { v: 1, cards: state.cards.map(pickSafe), defaultId: state.defaultId };
@@ -122,6 +124,13 @@
   }
 
   const loaded = loadState();
+  // First launch: start with a ready-made demo card so the wallet is usable before entering any details.
+  if (loaded.fresh) {
+    const y = new Date().getFullYear() % 100;
+    const demo = sanitizeCard({ id: newId(), brand: 'visa', last4: '4242', holder: 'Demo User', exp: `08/${y + 3}`, nickname: 'Demo Card', theme: 'midnight', addedAt: Date.now() });
+    loaded.cards.push(demo);
+    loaded.defaultId = demo.id;
+  }
   const state = {
     cards: loaded.cards,
     defaultId: loaded.defaultId,
