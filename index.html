@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="he" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Wallet – הדמיה</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;background:#000;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;overflow:hidden}
+#phone{position:relative;width:100%;height:100%;max-width:430px;margin:0 auto;background:#efeff4;overflow:hidden}
+/* status bar */
+#status{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0 38px;font-weight:600;font-size:16px;z-index:50;color:#000;direction:ltr}
+#status .r{display:flex;gap:6px;align-items:center;font-size:13px}
+.batt{width:25px;height:12px;border:1.5px solid #0004;border-radius:4px;position:relative;padding:1px}
+.batt i{display:block;height:100%;width:60%;background:#f5c400;border-radius:2px}
+.bars{display:flex;gap:1.5px;align-items:flex-end;height:11px}.bars b{width:3px;background:#000;border-radius:1px}
+#island{position:absolute;top:11px;left:50%;width:120px;height:35px;margin-left:-60px;background:#000;border-radius:20px;z-index:60;transition:all .35s cubic-bezier(.3,1.3,.5,1)}
+#island.big{width:100px;height:100px;margin-left:-50px;border-radius:30px;top:14px}
+#faceid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+#island.big #faceid{opacity:1}
+/* wallet home */
+#home{position:absolute;inset:0;padding-top:70px;transition:opacity .4s}
+#home h1{margin:10px 20px 18px;font-size:34px;font-weight:700;color:#000;direction:rtl;text-align:right}
+#hint{position:absolute;bottom:60px;left:0;right:0;text-align:center;color:#888;font-size:15px}
+/* card */
+.card{position:absolute;left:14px;right:14px;height:0;padding-bottom:calc((100% - 28px)*0 + 0px);aspect-ratio:1.586/1;height:auto;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.18);transition:transform .55s cubic-bezier(.2,.9,.25,1),top .55s cubic-bezier(.2,.9,.25,1);direction:ltr;cursor:pointer}
+.card .bg{position:absolute;inset:0}
+.logo{position:absolute;left:18px;top:14px;font-size:27px;font-weight:700;color:#111;letter-spacing:-.5px}
+.logo b{font-weight:900;letter-spacing:1px}
+.visa{position:absolute;right:20px;bottom:28px;font-size:36px;font-weight:900;font-style:italic;color:#1a1f71;opacity:.6;letter-spacing:-1px;font-family:Arial Black,Arial,sans-serif}
+.prep{position:absolute;right:22px;bottom:16px;font-size:10px;color:#777}
+.dots{position:absolute;left:16px;bottom:16px;font-size:15px;color:#222;font-weight:500}
+.demo{position:absolute;left:16px;bottom:38px;font-size:9px;color:#0006;letter-spacing:.8px}
+/* payment sheet */
+#pay{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .35s;background:#efeff4}
+#pay.on{opacity:1;pointer-events:auto}
+#pay .card{top:62px;transform:translateY(60vh) scale(.96)}
+#pay.on .card{transform:none}
+#reader{position:absolute;top:calc(62px + (100vw*0.586) + 60px);left:0;right:0;text-align:center;color:#8a8a8e;font-size:17px;opacity:0;transition:opacity .4s}
+#reader.on{opacity:1}
+#reader svg{display:block;margin:0 auto 14px}
+#done{position:absolute;top:calc(62px + (100vw*0.586) + 60px);left:0;right:0;text-align:center;color:#8a8a8e;font-size:17px;opacity:0;transition:opacity .3s}
+#done.on{opacity:1}
+#done .ck{width:70px;height:70px;border-radius:50%;margin:0 auto 12px;background:#30d158;display:flex;align-items:center;justify-content:center}
+#done .ck svg{stroke-dasharray:40;stroke-dashoffset:40}
+#done.on .ck svg{animation:d .4s .15s forwards}
+@keyframes d{to{stroke-dashoffset:0}}
+.pulse{animation:p 1.6s infinite}
+@keyframes p{50%{transform:scale(1.07);opacity:.75}}
+#amt{position:absolute;bottom:90px;left:0;right:0;text-align:center;color:#000;font-size:15px;opacity:0;transition:opacity .4s;direction:rtl}
+#amt.on{opacity:1}#amt b{display:block;font-size:30px;margin-top:4px}
+#bar{position:absolute;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;background:#000;border-radius:3px;z-index:40}
+#cancel{position:absolute;bottom:30px;left:0;right:0;text-align:center;color:#0a84ff;font-size:17px;z-index:40;opacity:0;transition:opacity .3s}
+#cancel.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="status"><span id="clock">14:03</span><span class="r"><span class="bars"><b style="height:4px"></b><b style="height:6px"></b><b style="height:8px"></b><b style="height:11px;opacity:.3"></b></span>5G<span class="batt"><i></i></span></span></div>
+  <div id="island"><div id="faceid"></div></div>
+
+  <div id="home">
+    <h1>ארנק</h1>
+    <div class="card" id="c1" style="top:90px" onclick="start()">
+      <svg class="bg" viewBox="0 0 400 252" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd6c8"/><stop offset="1" stop-color="#e8f4f2"/></linearGradient>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#cfe0f7"/><stop offset="1" stop-color="#b9c9ee"/></linearGradient>
+        </defs>
+        <rect width="400" height="252" fill="#fff"/>
+        <path d="M90 0 C150 5 160 70 120 110 C90 140 40 120 50 70 C55 30 60 0 90 0Z" fill="url(#g1)" opacity=".85"/>
+        <path d="M190 40 C230 20 270 60 250 120 C240 170 160 200 150 150 C145 100 160 55 190 40Z" fill="url(#g1)" opacity=".8"/>
+        <path d="M330 -10 C400 0 420 60 380 100 C340 130 300 90 310 50 C315 20 320 -8 330 -10Z" fill="url(#g2)" opacity=".9"/>
+        <path d="M330 150 C380 140 420 180 400 230 C380 260 320 250 310 210 C305 180 315 155 330 150Z" fill="url(#g2)" opacity=".8"/>
+      </svg>
+      <div class="logo">My <b>MAX</b></div>
+      <div class="demo">SIMULATION · הדמיה</div>
+      <div class="dots">•••• 2565</div>
+      <div class="visa">VISA</div><div class="prep">Prepaid</div>
+    </div>
+    <div id="hint">לחץ על הכרטיס כדי לשלם</div>
+  </div>
+
+  <div id="pay">
+    <div class="card" id="c2" onclick="tap()">
+      <svg class="bg" viewBox="0 0 400 252" preserveAspectRatio="none">
+        <rect width="400" height="252" fill="#fff"/>
+        <path d="M90 0 C150 5 160 70 120 110 C90 140 40 120 50 70 C55 30 60 0 90 0Z" fill="url(#g1)" opacity=".85"/>
+        <path d="M190 40 C230 20 270 60 250 120 C240 170 160 200 150 150 C145 100 160 55 190 40Z" fill="url(#g1)" opacity=".8"/>
+        <path d="M330 -10 C400 0 420 60 380 100 C340 130 300 90 310 50 C315 20 320 -8 330 -10Z" fill="url(#g2)" opacity=".9"/>
+        <path d="M330 150 C380 140 420 180 400 230 C380 260 320 250 310 210 C305 180 315 155 330 150Z" fill="url(#g2)" opacity=".8"/>
+      </svg>
+      <div class="logo">My <b>MAX</b></div>
+      <div class="demo">SIMULATION · הדמיה</div>
+      <div class="dots">•••• 2565</div>
+      <div class="visa">VISA</div><div class="prep">Prepaid</div>
+    </div>
+    <div id="reader">
+      <svg class="pulse" width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3"/><rect x="19" y="12" width="18" height="32" rx="4" fill="#d6e9ff" stroke="#0a84ff" stroke-width="2.5"/><rect x="25" y="15" width="6" height="2" rx="1" fill="#0a84ff"/></svg>
+      Hold Near Reader
+    </div>
+    <div id="done"><div class="ck"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19l7 7 13-14"/></svg></div>Done</div>
+    <div id="amt">Max Prepaid •••• 2565<b>₪ 49.90</b></div>
+    <div id="cancel" onclick="reset()">ביטול</div>
+  </div>
+  <div id="bar"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const face=`<svg id="fs" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#30d158" stroke-width="3" stroke-linecap="round"><path d="M8 20V12a4 4 0 014-4h8M44 8h8a4 4 0 014 4v8M56 44v8a4 4 0 01-4 4h-8M20 56h-8a4 4 0 01-4-4v-8"/><g id="fe"><path d="M24 24v6M40 24v6M32 26v8h-3"/><path d="M23 42c5 5 13 5 18 0"/></g></svg>`;
+const scan=`<svg width="70" height="70" viewBox="0 0 70 70" fill="none" stroke="#30d158" stroke-width="2"><ellipse cx="35" cy="35" rx="22" ry="22" opacity=".5"><animateTransform attributeName="transform" type="rotate" from="0 35 35" to="360 35 35" dur="1.2s" repeatCount="indefinite"/></ellipse><ellipse cx="35" cy="35" rx="10" ry="24" opacity=".8"><animateTransform attributeName="transform" type="rotate" from="0 35 35" to="-360 35 35" dur="1.6s" repeatCount="indefinite"/></ellipse><ellipse cx="35" cy="35" rx="24" ry="10"><animateTransform attributeName="transform" type="rotate" from="0 35 35" to="360 35 35" dur="2s" repeatCount="indefinite"/></ellipse></svg>`;
+let state=0;
+function clock(){const d=new Date();$('clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')}clock();setInterval(clock,10000);
+function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+function start(){
+  if(state)return;state=1;
+  $('pay').classList.add('on');
+  setTimeout(()=>{ // face id
+    $('faceid').innerHTML=scan;$('island').classList.add('big');
+    setTimeout(()=>{$('faceid').innerHTML=face;buzz(30);
+      setTimeout(()=>{$('island').classList.remove('big');state=2;
+        $('reader').classList.add('on');$('amt').classList.add('on');$('cancel').classList.add('on');
+        $('hint').style.opacity=0;
+      },700);
+    },1300);
+  },550);
+}
+function tap(){ // simulate holding near reader
+  if(state!==2)return;state=3;
+  $('reader').classList.remove('on');
+  buzz([40,60,40]);
+  setTimeout(()=>{$('done').classList.add('on');$('cancel').classList.remove('on');},350);
+  setTimeout(reset,3200);
+}
+function reset(){
+  $('pay').classList.remove('on');
+  ['reader','amt','cancel','done'].forEach(i=>$(i).classList.remove('on'));
+  $('island').classList.remove('big');$('hint').style.opacity=1;
+  setTimeout(()=>state=0,400);
+}
+</script>
+</body>
+</html>
