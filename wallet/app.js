@@ -127,7 +127,7 @@
   // First launch: start with a ready-made demo card so the wallet is usable before entering any details.
   if (loaded.fresh) {
     const y = new Date().getFullYear() % 100;
-    const demo = sanitizeCard({ id: newId(), brand: 'visa', last4: '4242', holder: 'Demo User', exp: `08/${y + 3}`, nickname: 'Demo Card', theme: 'midnight', addedAt: Date.now() });
+    const demo = sanitizeCard({ id: newId(), brand: 'visa', last4: '4242', holder: 'Itamar', exp: `08/${y + 3}`, nickname: 'Itamar\'s Friend', theme: 'sunset', addedAt: Date.now() });
     loaded.cards.push(demo);
     loaded.defaultId = demo.id;
   }
